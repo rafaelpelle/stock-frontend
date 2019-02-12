@@ -1,15 +1,6 @@
 import * as React from 'react'
 import { Dropdown } from 'semantic-ui-react'
 
-const dropdownOptions = [
-	{ text: 'Regular contribution', value: 'regularContribution', key: 'regularContribution' },
-	{ text: 'Additional contribution', value: 'additionalContribution', key: 'additionalContribution' },
-	{ text: 'Portability contribution', value: 'portabilityContribution', key: 'portabilityContribution' },
-	{ text: 'Supplementary plan contribution', value: 'supplementaryPlanContribution', key: 'supplementaryPlanContribution' },
-	{ text: 'Insurance company contribution', value: 'insuranceCompanyContribution', key: 'insuranceCompanyContribution' },
-	{ text: 'Total wthdraw', value: 'totalWithdraw', key: 'totalWithdraw' },
-]
-
 const dropdownStyle = { textOverflow: 'ellipsis' }
 
 
@@ -27,10 +18,11 @@ class TransactionDropdown extends React.Component<Props, State> {
 
 	render() {
 		const { selectedOption } = this.state
+		const { hideTotal } = this.props
 		return (
 			<Dropdown
 				onChange={ this.handleChange }
-				options={ dropdownOptions }
+				options={ hideTotal ? hideTotalOptions : totalOptions }
 				value={ selectedOption }
 				style={ dropdownStyle }
 				fluid
@@ -50,6 +42,7 @@ interface OwnState {
 
 interface OwnProps {
 	handleTypeChange: (type: string) => void,
+	hideTotal?: boolean,
 }
 
 interface StateProps {}
@@ -58,3 +51,21 @@ interface DispatchProps {}
 
 type Props = StateProps & DispatchProps & OwnProps
 type State = OwnState
+
+
+const totalOptions = [
+	{ text: 'Regular contribution', value: 'regularContribution', key: 'regularContribution' },
+	{ text: 'Additional contribution', value: 'additionalContribution', key: 'additionalContribution' },
+	{ text: 'Portability contribution', value: 'portabilityContribution', key: 'portabilityContribution' },
+	{ text: 'Supplementary plan contribution', value: 'supplementaryPlanContribution', key: 'supplementaryPlanContribution' },
+	{ text: 'Insurance company contribution', value: 'insuranceCompanyContribution', key: 'insuranceCompanyContribution' },
+	{ text: 'Total wthdraw', value: 'totalWithdraw', key: 'totalWithdraw' },
+]
+
+const hideTotalOptions = [
+	{ text: 'Regular contribution', value: 'regularContribution', key: 'regularContribution' },
+	{ text: 'Additional contribution', value: 'additionalContribution', key: 'additionalContribution' },
+	{ text: 'Portability contribution', value: 'portabilityContribution', key: 'portabilityContribution' },
+	{ text: 'Supplementary plan contribution', value: 'supplementaryPlanContribution', key: 'supplementaryPlanContribution' },
+	{ text: 'Insurance company contribution', value: 'insuranceCompanyContribution', key: 'insuranceCompanyContribution' },
+]

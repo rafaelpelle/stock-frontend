@@ -10,7 +10,7 @@ import DepositPanel from '../components/depositPanel'
 class DepositPage extends React.Component<Props, State> {
 	render() {
 		return (
-			<Grid container centered style={ homePageStyle }>
+			<Grid container centered style={ pageStyle }>
 				<Grid.Column computer={ 8 } mobile={ 16 }>
 					<Segment style={ segmentStyle }>
 						<DepositPanel />
@@ -44,7 +44,7 @@ type State = OwnState
 ///////////////////////////// STYLE ////////////////////////////
 /////////////////////////////////////////////////////////////////
 
-const homePageStyle =  {
+const pageStyle =  {
 	padding: '3em 0em',
 }
 const segmentStyle = {

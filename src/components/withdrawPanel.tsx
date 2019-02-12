@@ -26,7 +26,7 @@ const brazilianMoneyMask = createNumberMask({
 
 
 
-class DepositPanel extends React.Component<Props, State> {
+class WithdrawPanel extends React.Component<Props, State> {
 	constructor(props: Props) {
 		super(props)
 		this.state = { loading: false, resultVisible: false, result: '', cpf: '', transactionValue: '', type: '', icon: null }
@@ -50,7 +50,7 @@ class DepositPanel extends React.Component<Props, State> {
 		let result = ''
 		let icon = ''
 		try {
-			const request = await axiosInstance.post('/deposit', {
+			const request = await axiosInstance.post('/withdraw', {
 				id: null,
 				userCpf: cpf,
 				installmentValue: (Number(transactionValue) / 100),
@@ -69,10 +69,10 @@ class DepositPanel extends React.Component<Props, State> {
 	}
 
 	render() {
-		const { loading, resultVisible, cpf, transactionValue, result, icon } = this.state
+		const { loading, resultVisible, cpf, transactionValue, result, icon, type } = this.state
 		return (
 			<Container textAlign='center' fluid>
-				<Header content='Deposit transaction' style={ headerStyle }/>
+				<Header content='Withdraw transaction' style={ headerStyle }/>
 				<Form>
 					<Form.Field style={ formStyle }>
 						<Label content='CPF:' style={ formLabelStyle } />
@@ -92,17 +92,18 @@ class DepositPanel extends React.Component<Props, State> {
 							name='transactionValue'
 							id='transactionValue'
 							type='text'
-							value={ transactionValue || '' }
+							disabled={ type === 'totalWithdraw' }
+							value={ type === 'totalWithdraw' ? 'Every single cent...' : transactionValue || '' }
 							onChange={ this.handleValueChange }
 							mask={ brazilianMoneyMask }
 						/>
 					</Form.Field>
 					<Form.Field style={ formStyle }>
 						<Label content='Type:' style={ formLabelStyle } />
-						<TransactionDropdown handleTypeChange={ this.handleTypeChange } hideTotal={ true } />
+						<TransactionDropdown handleTypeChange={ this.handleTypeChange } hideTotal={ false } />
 					</Form.Field>
 					<Button
-						content={ resultVisible ? null : 'DEPOSIT' }
+						content={ resultVisible ? null : 'WITHDRAW' }
 						icon={ resultVisible ? icon : null }
 						style={ buttonStyle }
 						loading={ loading }
@@ -123,7 +124,7 @@ class DepositPanel extends React.Component<Props, State> {
 
 const mapStateToProps = (state: RootReducerInterface) => ({ })
 const mapDispatchToProps = (dispatch: any) => bindActionCreators({ }, dispatch)
-export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(DepositPanel)
+export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(WithdrawPanel)
 
 /////////////////////////////////////////////////////////////////
 /////////////////////////// INTERFACES //////////////////////////

@@ -6,7 +6,11 @@ import PageHeader from '../components/pageHeader'
 require('./app.css')
 
 class App extends React.Component<Props, State> {
-    render() {
+	componentWillMount() {
+		history.push('/')
+	}
+
+	render() {
 	    return (
             <Router history={ history }>
 				<div>
