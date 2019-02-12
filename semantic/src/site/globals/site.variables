@@ -18,6 +18,9 @@
 @black          : #000000;
 @white          : #FFFFFF;
 
+@getmorePrimaryColor            :   @primaryColor;
+@getmoreSecondaryColor          :   @secondaryColor;
+
 @fontName           : 'Montserrat';
 @fontSmoothing      : antialiased;
 

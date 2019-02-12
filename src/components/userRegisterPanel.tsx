@@ -19,39 +19,50 @@ const emptyUser = {
 }
 
 
-class FindUserPanel extends React.Component<Props, State> {
+class UserRegisterPanel extends React.Component<Props, State> {
 	constructor(props: Props) {
 		super(props)
-		this.state = { loading: false, resultVisible: false, user: null, cpf: '' }
+		this.state = { loading: false, resultVisible: false, result: '', cpf: '', name: '', icon: null }
 	}
 
 	handleCPFChange = (event: ChangeEvent<HTMLInputElement>) => {
 		this.setState({ cpf: String(event.target.value).replace(/[^0-9]/g, '') })
 	}
 
-	handleFindUserClick = async () => {
+	handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+		this.setState({ name: String(event.target.value) })
+	}
+
+	handleRegisterClick = async () => {
 		this.setState({ loading: true })
-		const { cpf, resultVisible } = this.state
-		if (resultVisible) {
-			this.setState({ loading: false, resultVisible: false })
-		} else {
-			try {
-				const request = await axiosInstance.get(`/user/${cpf}`)
-				console.log(request.data)
-				this.setState({ user: request.data, loading: false, resultVisible: true })
-			} catch (e) {
-				console.log(e)
-			}
+		const { cpf, name } = this.state
+		let result = ''
+		let icon = ''
+		try {
+			const request = await axiosInstance.put(`/user/`, {
+				id: null,
+				walletId: null,
+				registrationDate: null,
+				lastRegularWithdraw: null,
+				status: null,
+				name,
+				cpf,
+			})
+			result = request.data.successMsg
+			icon = 'check'
+		} catch (e) {
+			console.log(e)
+			result = e.response.data.errorMsg
+			icon = 'x'
 		}
+		this.setState({ loading: false, resultVisible: true, result, icon })
 	}
 
 	render() {
-		const { loading, resultVisible, cpf, user } = this.state
-		const { id, walletId, registrationDate, lastRegularWithdraw, status, name } = user || emptyUser
-
+		const { loading, resultVisible, cpf, name, result, icon } = this.state
 		return (
 			<Container textAlign='center' fluid>
-				<Header content='Find user' style={ headerStyle }/>
+				<Header content='Register user' style={ headerStyle }/>
 				<Form>
 					<Form.Field style={ formStyle }>
 						<Label content='CPF:' style={ formLabelStyle } />
@@ -65,25 +76,31 @@ class FindUserPanel extends React.Component<Props, State> {
 							mask={ cpfMask }
 						/>
 					</Form.Field>
+					<Form.Field style={ formStyle }>
+						<Label content='Name:' style={ formLabelStyle } />
+						<Form.Input
+							// placeholder='CPF'
+							name='name'
+							type='text'
+							value={ name || '' }
+							onChange={ this.handleNameChange }
+							autoComplete='off'
+						/>
+					</Form.Field>
 					<Button
-						content={ resultVisible ? 'HIDE USER' : 'FIND USER' }
+						content={ resultVisible ? null : 'REGISTER' }
+						icon={ resultVisible ? icon : null }
 						style={ buttonStyle }
 						loading={ loading }
-						onClick={ this.handleFindUserClick }
+						fluid={ resultVisible }
+						onClick={ this.handleRegisterClick }
 						primary
 					/>
 				</Form>
 				<Transition.Group animation='fly down' duration={ 1500 }>
 					{ resultVisible &&
-					<Container textAlign='left' style={ bottomContainerStyle }>
-						<Header style={ infoStyle }>User ID:   <span style={ valueStyle }>{ id }</span> </Header>
-						<Header style={ infoStyle }>Name:   <span style={ valueStyle }>{ name }</span> </Header>
-						<Header style={ infoStyle }>CPF:   <span style={ valueStyle }>{ cpf }</span> </Header>
-						<Header style={ infoStyle }>Wallet ID:   <span style={ valueStyle }>{ walletId }</span> </Header>
-						<Header style={ infoStyle }>Status:   <span style={ valueStyle }>{ status }</span> </Header>
-						<Header style={ infoStyle }>Registration date:   <span style={ valueStyle }>{ registrationDate }</span> </Header>
-						<Header style={ infoStyle }>Last regular withdraw:   <span style={ valueStyle }>{ lastRegularWithdraw }</span> </Header>
-					</Container> }
+						<Header content={ result } style={ valueStyle }/>
+					}
 				</Transition.Group>
 			</Container>
 		)
@@ -92,7 +109,7 @@ class FindUserPanel extends React.Component<Props, State> {
 
 const mapStateToProps = (state: RootReducerInterface) => ({ })
 const mapDispatchToProps = (dispatch: any) => bindActionCreators({ }, dispatch)
-export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(FindUserPanel)
+export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(UserRegisterPanel)
 
 /////////////////////////////////////////////////////////////////
 /////////////////////////// INTERFACES //////////////////////////
@@ -100,8 +117,10 @@ export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, map
 interface OwnState {
 	loading: boolean,
 	resultVisible: boolean,
-	user: UserInterface,
+	result: string,
+	name: string,
 	cpf: string,
+	icon: string,
 }
 
 interface OwnProps {}
@@ -134,13 +153,7 @@ const formStyle = {
 }
 const buttonStyle = {
 	marginTop: '2em',
-}
-const bottomContainerStyle = {
-	marginTop: '3em',
-}
-const infoStyle = {
-	...formLabelStyle,
-	fontWeight: 400,
+	transition: 'all .2s ease-in-out',
 }
 const valueStyle = {
 	...formLabelStyle,

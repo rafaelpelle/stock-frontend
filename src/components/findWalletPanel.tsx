@@ -82,7 +82,7 @@ class FindUserPanel extends React.Component<Props, State> {
 						primary
 					/>
 				</Form>
-				<Transition.Group animation='fly left' duration={ 1000 }>
+				<Transition.Group animation='fly down' duration={ 1500 }>
 					{ resultVisible &&
 					<Container textAlign='left' style={ bottomContainerStyle }>
 						<Header style={ infoStyle }>Wallet ID:   <span style={ valueStyle }>{ id }</span> </Header>

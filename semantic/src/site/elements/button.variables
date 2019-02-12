@@ -1,3 +1,11 @@
 /*******************************
     User Variable Overrides
 *******************************/
+@iconOpacity: 1;
+@iconButtonOpacity: 1;
+@labeledIconBackgroundColor: transparent;
+@labeledIconPadding: @labeledIconWidth;
+@verticalPadding: 1em;
+@horizontalPadding: 1.5em;
+@downBoxShadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.35) inset !important;
+@activeBoxShadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.3) inset !important;
