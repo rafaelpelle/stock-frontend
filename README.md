@@ -2,7 +2,7 @@
 Uma aplicação utilizando React/Webpack/Redux/TypeScript/Semantic-UI... que tem o objetivo de consumir a API REST (stock-challenge) desenvolvida como desafio no processo seletivo.
 
 
-###Instruções de uso:
+### Instruções de uso:
 Tenha Node.js e NPM instalados
 
 Na raiz do projeto crie um arquivo chamado '.env' e insira a URL da API. Por exemplo:
