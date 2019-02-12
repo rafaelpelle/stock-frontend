@@ -2,42 +2,61 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { axiosInstance } from '../utils/httpClient'
-import { Button, Container, Form, Header, Image, Label, Transition } from 'semantic-ui-react'
+import createNumberMask from 'text-mask-addons/dist/createNumberMask'
+import { Button, Container, Form, Header, Label, Transition } from 'semantic-ui-react'
 import { RootReducerInterface } from '../interfaces/reduxInterfaces'
 import { ChangeEvent } from 'react'
+import TransactionDropdown from '../components/transactionDropdown'
 import MaskedInput from 'react-text-mask'
 
 const cpfMask = [/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/ ]
+const brazilianMoneyMask = createNumberMask({
+	allowDecimal: true,
+	allowLeadingZeroes: false,
+	allowNegative: false,
+	decimalLimit: 2,
+	decimalSymbol: ',',
+	includeThousandsSeparator: true,
+	integerLimit: null,
+	prefix: 'R$ ',
+	requireDecimal: true,
+	suffix: '00',
+	thousandsSeparatorSymbol: '.',
+})
 
 
-class UserRegisterPanel extends React.Component<Props, State> {
+
+class DepositPanel extends React.Component<Props, State> {
 	constructor(props: Props) {
 		super(props)
-		this.state = { loading: false, resultVisible: false, result: '', cpf: '', name: '', icon: null }
+		this.state = { loading: false, resultVisible: false, result: '', cpf: '', transactionValue: '', type: '', icon: null }
 	}
 
 	handleCPFChange = (event: ChangeEvent<HTMLInputElement>) => {
 		this.setState({ cpf: String(event.target.value).replace(/[^0-9]/g, '') })
 	}
 
-	handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
-		this.setState({ name: String(event.target.value) })
+	handleValueChange = (event: any) => {
+		this.setState({ ...this.state, [event.target.name]: String(event.target.value).replace(/[^0-9]/g, '') })
+	}
+
+	handleTypeChange = (type: string) => {
+		this.setState({ type })
 	}
 
 	handleRegisterClick = async () => {
 		this.setState({ loading: true })
-		const { cpf, name } = this.state
+		const { cpf, transactionValue, type } = this.state
 		let result = ''
 		let icon = ''
 		try {
-			const request = await axiosInstance.put(`/user/`, {
+			const request = await axiosInstance.post('/deposit', {
 				id: null,
-				walletId: null,
-				registrationDate: null,
-				lastRegularWithdraw: null,
-				status: null,
-				name,
-				cpf,
+				userCpf: cpf,
+				installmentValue: (Number(transactionValue) / 100),
+				numberOfInstallments: 1,
+				type,
+				date: null,
 			})
 			result = request.data.successMsg
 			icon = 'check'
@@ -50,10 +69,10 @@ class UserRegisterPanel extends React.Component<Props, State> {
 	}
 
 	render() {
-		const { loading, resultVisible, cpf, name, result, icon } = this.state
+		const { loading, resultVisible, cpf, transactionValue, result, icon } = this.state
 		return (
 			<Container textAlign='center' fluid>
-				<Header content='Register user' style={ headerStyle }/>
+				<Header content='Deposit transaction' style={ headerStyle }/>
 				<Form>
 					<Form.Field style={ formStyle }>
 						<Label content='CPF:' style={ formLabelStyle } />
@@ -68,18 +87,22 @@ class UserRegisterPanel extends React.Component<Props, State> {
 						/>
 					</Form.Field>
 					<Form.Field style={ formStyle }>
-						<Label content='Name:' style={ formLabelStyle } />
-						<Form.Input
-							// placeholder='CPF'
-							name='name'
+						<Label content='Value:' style={ formLabelStyle }  />
+						<MaskedInput
+							name='transactionValue'
+							id='transactionValue'
 							type='text'
-							value={ name || '' }
-							onChange={ this.handleNameChange }
-							autoComplete='off'
+							value={ transactionValue || '' }
+							onChange={ this.handleValueChange }
+							mask={ brazilianMoneyMask }
 						/>
 					</Form.Field>
+					<Form.Field style={ formStyle }>
+						<Label content='Type:' style={ formLabelStyle } />
+						<TransactionDropdown handleTypeChange={ this.handleTypeChange } />
+					</Form.Field>
 					<Button
-						content={ resultVisible ? null : 'REGISTER' }
+						content={ resultVisible ? null : 'DEPOSIT' }
 						icon={ resultVisible ? icon : null }
 						style={ buttonStyle }
 						loading={ loading }
@@ -100,7 +123,7 @@ class UserRegisterPanel extends React.Component<Props, State> {
 
 const mapStateToProps = (state: RootReducerInterface) => ({ })
 const mapDispatchToProps = (dispatch: any) => bindActionCreators({ }, dispatch)
-export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(UserRegisterPanel)
+export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(DepositPanel)
 
 /////////////////////////////////////////////////////////////////
 /////////////////////////// INTERFACES //////////////////////////
@@ -109,8 +132,9 @@ interface OwnState {
 	loading: boolean,
 	resultVisible: boolean,
 	result: string,
-	name: string,
 	cpf: string,
+	transactionValue: string,
+	type: string,
 	icon: string,
 }
 
@@ -151,4 +175,3 @@ const valueStyle = {
 	color: '#2453a2',
 	fontWeight: 800,
 }
-
