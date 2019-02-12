@@ -2,43 +2,45 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { axiosInstance } from '../utils/httpClient'
-import { Button, Container, Form, Header, Image, Label, Transition } from 'semantic-ui-react'
+import { Button, Container, Form, Header, Label, Transition } from 'semantic-ui-react'
 import { RootReducerInterface } from '../interfaces/reduxInterfaces'
-import { UserInterface } from '../interfaces/modelInterfaces'
+import { WalletInterface } from '../interfaces/modelInterfaces'
+import { handleBrazilianMoney } from '../utils/stringParser'
 import { ChangeEvent } from 'react'
 import MaskedInput from 'react-text-mask'
 
 const cpfMask = [/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/ ]
-const emptyUser = {
-	id: '',
-	walletId: '',
-	registrationDate: '',
-	lastRegularWithdraw: '',
-	status: '',
-	name: '',
+const emptyWallet: WalletInterface = {
+	id: 0,
+	regularContribution: 0,
+	additionalContribution: 0,
+	portabilityContribution: 0,
+	supplementaryPlanContribution: 0,
+	insuranceCompanyContribution: 0,
+	totalBalance: 0,
 }
 
 
 class FindUserPanel extends React.Component<Props, State> {
 	constructor(props: Props) {
 		super(props)
-		this.state = { loading: false, resultVisible: false, user: null, cpf: '' }
+		this.state = { loading: false, resultVisible: false, wallet: null, cpf: '' }
 	}
 
 	handleCPFChange = (event: ChangeEvent<HTMLInputElement>) => {
 		this.setState({ cpf: String(event.target.value).replace(/[^0-9]/g, '') })
 	}
 
-	handleFindUserClick = async () => {
+	handleFindWalletClick = async () => {
 		this.setState({ loading: true })
 		const { cpf, resultVisible } = this.state
 		if (resultVisible) {
 			this.setState({ loading: false, resultVisible: false })
 		} else {
 			try {
-				const request = await axiosInstance.get(`/user/${cpf}`)
+				const request = await axiosInstance.get(`/user/wallet/${cpf}`)
 				console.log(request.data)
-				this.setState({ user: request.data, loading: false, resultVisible: true })
+				this.setState({ wallet: request.data, loading: false, resultVisible: true })
 			} catch (e) {
 				console.log(e)
 			}
@@ -46,12 +48,19 @@ class FindUserPanel extends React.Component<Props, State> {
 	}
 
 	render() {
-		const { loading, resultVisible, cpf, user } = this.state
-		const { id, walletId, registrationDate, lastRegularWithdraw, status, name } = user || emptyUser
-
+		const { loading, resultVisible, cpf, wallet } = this.state
+		const {
+			id,
+			regularContribution,
+			additionalContribution,
+			portabilityContribution,
+			supplementaryPlanContribution,
+			insuranceCompanyContribution,
+			totalBalance,
+		} = wallet || emptyWallet
 		return (
 			<Container textAlign='center' fluid>
-				<Header content='Find user' style={ headerStyle }/>
+				<Header content='Find wallet' style={ headerStyle }/>
 				<Form>
 					<Form.Field style={ formStyle }>
 						<Label content='CPF:' style={ formLabelStyle } />
@@ -66,23 +75,23 @@ class FindUserPanel extends React.Component<Props, State> {
 						/>
 					</Form.Field>
 					<Button
-						content={ resultVisible ? 'HIDE USER' : 'FIND USER' }
+						content={ resultVisible ? 'HIDE WALLET' : 'FIND WALLET' }
 						style={ buttonStyle }
 						loading={ loading }
-						onClick={ this.handleFindUserClick }
+						onClick={ this.handleFindWalletClick }
 						primary
 					/>
 				</Form>
-				<Transition.Group animation='fly right' duration={ 1000 }>
+				<Transition.Group animation='fly left' duration={ 1000 }>
 					{ resultVisible &&
 					<Container textAlign='left' style={ bottomContainerStyle }>
-						<Header style={ infoStyle }>User ID:   <span style={ valueStyle }>{ id }</span> </Header>
-						<Header style={ infoStyle }>Name:   <span style={ valueStyle }>{ name }</span> </Header>
-						<Header style={ infoStyle }>CPF:   <span style={ valueStyle }>{ cpf }</span> </Header>
-						<Header style={ infoStyle }>Wallet ID:   <span style={ valueStyle }>{ walletId }</span> </Header>
-						<Header style={ infoStyle }>Status:   <span style={ valueStyle }>{ status }</span> </Header>
-						<Header style={ infoStyle }>Registration date:   <span style={ valueStyle }>{ registrationDate }</span> </Header>
-						<Header style={ infoStyle }>Last regular withdraw:   <span style={ valueStyle }>{ lastRegularWithdraw }</span> </Header>
+						<Header style={ infoStyle }>Wallet ID:   <span style={ valueStyle }>{ id }</span> </Header>
+						<Header style={ infoStyle }>Regular Contribution:   <span style={ valueStyle }>{ handleBrazilianMoney(regularContribution) }</span> </Header>
+						<Header style={ infoStyle }>Additional Contribution:   <span style={ valueStyle }>{ handleBrazilianMoney(additionalContribution) }</span> </Header>
+						<Header style={ infoStyle }>Portability Contribution:   <span style={ valueStyle }>{ handleBrazilianMoney(portabilityContribution) }</span> </Header>
+						<Header style={ infoStyle }>Supplementary Plan Contribution:   <span style={ valueStyle }>{ handleBrazilianMoney(supplementaryPlanContribution)}</span> </Header>
+						<Header style={ infoStyle }>Insurance Company Contribution:   <span style={ valueStyle }>{ handleBrazilianMoney(insuranceCompanyContribution) }</span> </Header>
+						<Header style={ infoStyle }>Total balance:   <span style={ valueStyle }>{ handleBrazilianMoney(totalBalance) }</span> </Header>
 					</Container> }
 				</Transition.Group>
 			</Container>
@@ -100,7 +109,7 @@ export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, map
 interface OwnState {
 	loading: boolean,
 	resultVisible: boolean,
-	user: UserInterface,
+	wallet: WalletInterface,
 	cpf: string,
 }
 

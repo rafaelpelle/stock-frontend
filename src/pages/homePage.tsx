@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Grid, Segment } from 'semantic-ui-react'
 import FindUserPanel from '../components/findUserPanel'
+import FindWalletPanel from '../components/findWalletPanel'
 import { RootReducerInterface } from '../interfaces/reduxInterfaces'
 
 
@@ -18,7 +19,7 @@ class HomePage extends React.Component<Props, State> {
 				</Grid.Column>
 				<Grid.Column>
 					<Segment style={ segmentStyle }>
-
+						<FindWalletPanel />
 					</Segment>
 				</Grid.Column>
 			</Grid>

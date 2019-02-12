@@ -15,6 +15,7 @@ export interface WalletInterface {
 	portabilityContribution: number,
 	supplementaryPlanContribution: number,
 	insuranceCompanyContribution: number,
+	totalBalance: number,
 }
 
 export interface TransactionInterface {
