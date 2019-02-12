@@ -1,7 +1,6 @@
 /*******************************
      User Global Variables
 *******************************/
-
 @fontName           : 'Montserrat';
 @fontSmoothing      : antialiased;
 

@@ -1,0 +1,11 @@
+.ui.inverted.menu .active.item {
+    font-weight: 800;
+    background: none !important;
+    color: white !important;
+    opacity: 1;
+}
+
+.ui.inverted.menu .item {
+    opacity: 0.5;
+    margin: 0em 2em;
+}

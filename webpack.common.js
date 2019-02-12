@@ -88,11 +88,11 @@ module.exports = env = {
         }),
         new HtmlWebpackPlugin({
              appMountId: 'root',
-             title: 'Stock challenge',
+             title: 'Stock frontend',
              template: './public/index.html'
         }),
         new SWPrecacheWebpackPlugin({
-            cacheId: 'React v1.0.0',
+            cacheId: 'Stock v1.0.0',
             dontCacheBustUrlsMatching: /\.\w{8}\./,
             filename: 'service-worker.js',
             minify: true,
@@ -118,16 +118,16 @@ module.exports = env = {
             }
         }),
         new WebpackPwaManifest({
-            name: 'Stock challenge',
-            short_name: 'Stock Front',
-            description: 'Stock Front',
-            background_color: '#b11016',
-            theme_color: '#b11016',
+            name: 'Stock frontend',
+            short_name: 'Stock frontend',
+            description: 'Stock frontend',
+            background_color: '#2453a2',
+            theme_color: '#2453a2',
             start_url: '/',
             icons: [
                 {
                     src: path.resolve(`./public/assets/images/companyLogo.png`),
-                    sizes: [96, 128, 192, 256, 384, 512],
+                    sizes: [96],
                     destination: path.join('assets', 'icons')
                 }
             ]

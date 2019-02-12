@@ -1,5 +1,4 @@
 import * as React from 'react'
-import * as promise from 'redux-promise'
 import { applyMiddleware, createStore } from 'redux'
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
@@ -8,6 +7,7 @@ import RegisterSW from './utils/registerSW'
 import App from './main/app'
 import reducers from './redux/reducers/reducers'
 import { composeWithDevTools } from 'redux-devtools-extension'
+import * as promise from 'redux-promise'
 import '../semantic/dist/semantic.min.css'
 
 const store = createStore(reducers, composeWithDevTools(
