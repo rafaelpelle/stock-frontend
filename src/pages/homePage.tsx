@@ -2,6 +2,7 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Grid, Segment } from 'semantic-ui-react'
+import FindUserPanel from '../components/findUserPanel'
 import { RootReducerInterface } from '../interfaces/reduxInterfaces'
 
 
@@ -9,9 +10,16 @@ import { RootReducerInterface } from '../interfaces/reduxInterfaces'
 class HomePage extends React.Component<Props, State> {
 	render() {
 		return (
-			<Grid container columns={ 2 }>
+			<Grid container columns={ 2 } style={ homePageStyle }>
 				<Grid.Column>
+					<Segment style={ segmentStyle }>
+						<FindUserPanel />
+					</Segment>
+				</Grid.Column>
+				<Grid.Column>
+					<Segment style={ segmentStyle }>
 
+					</Segment>
 				</Grid.Column>
 			</Grid>
 		)
@@ -39,6 +47,9 @@ type State = OwnState
 /////////////////////////////////////////////////////////////////
 ///////////////////////////// STYLES ////////////////////////////
 /////////////////////////////////////////////////////////////////
+const homePageStyle =  {
+	padding: '3em 0em',
+}
 const segmentStyle = {
 	padding: '2em',
 }
