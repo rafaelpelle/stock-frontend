@@ -1,0 +1,11 @@
+/*******************************
+     User Global Variables
+*******************************/
+
+@fontName           : 'Montserrat';
+@fontSmoothing      : antialiased;
+
+@importGoogleFonts : true;
+@googleFontName    : 'Montserrat';
+@googleFontSizes   : '300,400,500,600,700,800,900,400italic,700italic';
+@googleFontFamily  : '@{googleFontName}:@{googleFontSizes}';
