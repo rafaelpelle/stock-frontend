@@ -35,3 +35,7 @@ Para (finalmente) executar o projeto:
 ```
 yarn run dev
 ```
+### Ele deve estar rodando em
+```
+https:localhost:3000/
+```
