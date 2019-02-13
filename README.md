@@ -37,5 +37,5 @@ yarn run dev
 ```
 ### Ele deve estar rodando em
 ```
-https:localhost:3000/
+http:localhost:3000/
 ```
